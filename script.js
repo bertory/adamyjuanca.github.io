@@ -34,9 +34,11 @@ function initFormulario() {
         
         const nombre = contactoForm.querySelector('input[placeholder="Tu Nombre"]').value.trim();
         const email = contactoForm.querySelector('input[placeholder="Tu Email"]').value.trim();
+        const telefono = contactoForm.querySelector('input[placeholder="Tu Teléfono"]').value.trim();
         const mensaje = contactoForm.querySelector('textarea[placeholder="Tu Mensaje"]').value.trim();
 
-        if (!nombre || !email || !mensaje) {
+        // Validaciones
+        if (!nombre || !email || !telefono || !mensaje) {
             mostrarNotificacion('Por favor completa todos los campos', 'error');
             return;
         }
@@ -46,12 +48,26 @@ function initFormulario() {
             return;
         }
 
-        mostrarNotificacion('¡Mensaje Enviado! Rise, Tarnished! 🗡️', 'success');
+        if (!validarTelefono(telefono)) {
+            mostrarNotificacion('Por favor ingresa un teléfono válido', 'error');
+            return;
+        }
+
+        if (mensaje.length < 10) {
+            mostrarNotificacion('El mensaje debe tener al menos 10 caracteres', 'error');
+            return;
+        }
+
+        // Si todo es válido
+        mostrarNotificacion('¡Mensaje enviado! Te contactaremos pronto.', 'success');
         contactoForm.reset();
         
+        // NOTA: Aquí iría el envío a un servidor
+        // En la práctica, necesitarías un backend para procesar esto
         console.log({
             nombre,
             email,
+            telefono,
             mensaje
         });
     });
@@ -61,6 +77,12 @@ function initFormulario() {
 function validarEmail(email) {
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regexEmail.test(email);
+}
+
+// ===== VALIDACIÓN TELÉFONO =====
+function validarTelefono(telefono) {
+    const regexTelefono = /^[\d\s\-\+\(\)]{7,}$/;
+    return regexTelefono.test(telefono);
 }
 
 // ===== NOTIFICACIONES =====
@@ -74,26 +96,32 @@ function mostrarNotificacion(mensaje, tipo) {
         top: 20px;
         right: 20px;
         padding: 15px 25px;
-        border-radius: 2px;
+        border-radius: 6px;
         z-index: 10000;
         animation: slideIn 0.3s ease;
         font-weight: 600;
-        box-shadow: 0 0 30px rgba(212, 165, 116, 0.5);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     `;
 
     if (tipo === 'success') {
-        notificacion.style.backgroundColor = '#d4a574';
-        notificacion.style.color = '#1a1a1a';
-        notificacion.style.borderLeft = '4px solid #8b7968';
+        notificacion.style.backgroundColor = '#27ae60';
+        notificacion.style.color = 'white';
+        notificacion.style.borderLeft = '4px solid #229954';
     } else if (tipo === 'error') {
-        notificacion.style.backgroundColor = '#8b4513';
-        notificacion.style.color = '#f5f1e8';
-        notificacion.style.borderLeft = '4px solid #d4a574';
+        notificacion.style.backgroundColor = '#e74c3c';
+        notificacion.style.color = 'white';
+        notificacion.style.borderLeft = '4px solid #c0392b';
     }
 
     document.body.appendChild(notificacion);
 
+    // Animar entrada
+    setTimeout(() => {
+        notificacion.style.animation = 'slideIn 0.3s ease';
+    }, 0);
+
+    // Eliminar notificación después de 4 segundos
     setTimeout(() => {
         notificacion.style.opacity = '0';
         notificacion.style.transition = 'opacity 0.3s ease';
@@ -120,33 +148,28 @@ function initAnimaciones() {
     }, observerOptions);
 
     // Animar elementos
-    document.querySelectorAll('.feature-card, .personaje-card, .galeria-item, .stat-item').forEach(element => {
-        element.classList.add('fade-in');
+    document.querySelectorAll('.servicio-card, .galeria-item, .ventaja-item, .stat-card, .testimonial-card').forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'all 0.6s ease';
         observer.observe(element);
     });
 
-    // Efecto parallax en hero
-    window.addEventListener('scroll', () => {
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            const scrollPosition = window.pageYOffset;
-            hero.style.backgroundPosition = `center ${scrollPosition * 0.3}px`;
+    // Aplicar animación cuando es visible
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .servicio-card.visible,
+        .galeria-item.visible,
+        .ventaja-item.visible,
+        .stat-card.visible,
+        .testimonial-card.visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
-    });
-
-    // Botones con efectos
-    const botones = document.querySelectorAll('.btn-primary');
-    botones.forEach(boton => {
-        boton.addEventListener('mouseover', function() {
-            this.style.transform = 'scale(1.05)';
-        });
-
-        boton.addEventListener('mouseout', function() {
-            this.style.transform = 'scale(1)';
-        });
-    });
+    `;
+    document.head.appendChild(style);
 }
 
 // ===== LOG DE INICIALIZACIÓN =====
-console.log('⚔️ ELDEN RING - Página Oficial Cargada');
-console.log('Rise, Tarnished!');
+console.log('✅ Web Plantilla Cargada Correctamente');
+console.log('👉 Edita los estilos en style.css y contenido en index.html para personalizarla');
