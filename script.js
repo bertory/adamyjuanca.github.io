@@ -60,7 +60,7 @@ if (formularioContacto) {
         const nombre = document.getElementById('nombre').value.trim();
         const email = document.getElementById('email').value.trim();
         const telefono = document.getElementById('telefono').value.trim();
-        const asunto = document.getElementById('asunto').value;
+        const asunto = document.getElementById('asunto').value.trim();
         const mensaje = document.getElementById('mensaje').value.trim();
 
         // Validar campos
@@ -80,7 +80,7 @@ if (formularioContacto) {
         }
 
         if (!asunto) {
-            mostrarNotificacion('Por favor, selecciona un asunto', 'error');
+            mostrarNotificacion('Por favor, escribe un asunto', 'error');
             return;
         }
 
